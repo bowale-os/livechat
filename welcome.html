@@ -815,12 +815,14 @@
        /* Chat Area - Full Screen Beauty */
        .chat-area {
          width: 100%;
-         height: 100vh;
+         height: calc(100vh - 70px);
          margin-top: 70px;
          background: var(--bg-primary);
          border-radius: 20px 20px 0 0;
          box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
          overflow: hidden;
+         display: flex;
+         flex-direction: column;
        }
 
        /* Enhanced Chat Header */
@@ -829,6 +831,7 @@
          background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
          border-bottom: 1px solid var(--border-color);
          border-radius: 20px 20px 0 0;
+         flex-shrink: 0;
        }
 
        .chat-user-avatar {
@@ -847,26 +850,64 @@
          font-size: 0.8rem;
        }
 
+       /* Enhanced Messages Container */
+       .messages-container {
+         flex: 1;
+         overflow-y: auto;
+         padding: 1.5rem;
+         background: var(--bg-primary);
+       }
+
        /* Enhanced Input Area */
        .input-container {
          padding: 1.5rem;
          background: var(--bg-primary);
          border-top: 1px solid var(--border-color);
          border-radius: 0 0 20px 20px;
+         flex-shrink: 0;
+       }
+
+       .input-form {
+         display: flex;
+         gap: 1rem;
+         align-items: flex-end;
+       }
+
+       .input-wrapper {
+         flex: 1;
+         position: relative;
        }
 
        .message-input {
+         width: 100%;
          padding: 1rem 1.25rem;
          border-radius: 20px;
          font-size: 1rem;
          border: 2px solid var(--border-color);
          transition: all 0.3s ease;
+         resize: none;
+         outline: none;
+         font-family: inherit;
+         line-height: 1.5;
+         max-height: 120px;
+         background: var(--bg-primary);
+         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+         -webkit-appearance: none;
+         -moz-appearance: none;
+         appearance: none;
        }
 
        .message-input:focus {
          border-color: var(--primary-color);
          box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
          transform: scale(1.02);
+       }
+
+       .message-input:disabled {
+         background: var(--bg-tertiary);
+         color: var(--text-muted);
+         cursor: not-allowed;
+         transform: none;
        }
 
        .send-button {
@@ -876,6 +917,17 @@
          background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
          box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+         border: none;
+         color: white;
+         cursor: pointer;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         flex-shrink: 0;
+         font-size: 1.1rem;
+         -webkit-appearance: none;
+         -moz-appearance: none;
+         appearance: none;
        }
 
        .send-button:hover:not(:disabled) {
@@ -883,12 +935,18 @@
          box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
        }
 
-       /* Enhanced Messages */
-       .messages-container {
-         padding: 1.5rem;
-         gap: 1rem;
+       .send-button:active:not(:disabled) {
+         transform: scale(0.95);
        }
 
+       .send-button:disabled {
+         background: var(--text-muted);
+         cursor: not-allowed;
+         transform: none;
+         box-shadow: none;
+       }
+
+       /* Enhanced Messages */
        .message {
          max-width: 85%;
          animation: messageSlideIn 0.3s ease-out;
