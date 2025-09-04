@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LiveConnect | Real-time Chat Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --primary-hover: #5855eb;
+      --secondary-color: #f8fafc;
+      --accent-color: #10b981;
+      --danger-color: #ef4444;
+      --warning-color: #f59e0b;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --border-color: #e2e8f0;
+      --border-light: #f1f5f9;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-2xl: 1.5rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+         /* Main Container */
+     .landing-container {
+       min-height: 100vh;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       padding: 1rem;
+       position: relative;
+     }
+
+     /* Background Elements */
+     .bg-elements {
+       position: absolute;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100%;
+       overflow: hidden;
+       pointer-events: none;
+     }
+
+     .bg-circle {
+       position: absolute;
+       border-radius: 50%;
+       background: rgba(255, 255, 255, 0.1);
+       backdrop-filter: blur(10px);
+     }
+
+     .bg-circle:nth-child(1) {
+       width: 200px;
+       height: 200px;
+       top: -100px;
+       right: -100px;
+       animation: float 6s ease-in-out infinite;
+     }
+
+     .bg-circle:nth-child(2) {
+       width: 150px;
+       height: 150px;
+       bottom: -75px;
+       left: -75px;
+       animation: float 8s ease-in-out infinite reverse;
+     }
+
+     .bg-circle:nth-child(3) {
+       width: 100px;
+       height: 100px;
+       top: 40%;
+       left: 10%;
+       animation: float 7s ease-in-out infinite;
+     }
+
+     @keyframes float {
+       0%, 100% { transform: translateY(0px) rotate(0deg); }
+       50% { transform: translateY(-15px) rotate(180deg); }
+     }
+
+     /* Main Card */
+     .landing-card {
+       background: var(--bg-primary);
+       border-radius: var(--radius-2xl);
+       box-shadow: var(--shadow-xl);
+       padding: 2rem 2rem;
+       max-width: 420px;
+       width: 100%;
+       text-align: center;
+       position: relative;
+       z-index: 10;
+       backdrop-filter: blur(20px);
+       border: 1px solid rgba(255, 255, 255, 0.2);
+       opacity: 0;
+       transform: translateY(30px);
+       animation: slideUp 0.8s ease-out forwards;
+     }
+
+     @keyframes slideUp {
+       to {
+         opacity: 1;
+         transform: translateY(0);
+       }
+     }
+
+     /* Logo and Brand */
+     .brand-section {
+       margin-bottom: 1.5rem;
+     }
+
+     .logo {
+       width: 60px;
+       height: 60px;
+       background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+       border-radius: 50%;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       margin: 0 auto 1rem;
+       box-shadow: var(--shadow-lg);
+       animation: pulse 2s infinite;
+     }
+
+     .logo i {
+       font-size: 1.5rem;
+       color: white;
+     }
+
+     @keyframes pulse {
+       0%, 100% { transform: scale(1); }
+       50% { transform: scale(1.05); }
+     }
+
+     .brand-title {
+       font-size: 1.875rem;
+       font-weight: 700;
+       color: var(--text-primary);
+       margin-bottom: 0.25rem;
+       background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+       -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent;
+       background-clip: text;
+     }
+
+     .brand-subtitle {
+       font-size: 1rem;
+       color: var(--text-secondary);
+       margin-bottom: 1.5rem;
+       font-weight: 400;
+     }
+
+     /* Features */
+     .features {
+       display: flex;
+       justify-content: center;
+       gap: 1.5rem;
+       margin-bottom: 1.5rem;
+       flex-wrap: wrap;
+     }
+
+     .feature {
+       display: flex;
+       align-items: center;
+       gap: 0.5rem;
+       color: var(--text-secondary);
+       font-size: 0.8rem;
+       font-weight: 500;
+     }
+
+     .feature i {
+       color: var(--accent-color);
+       font-size: 0.9rem;
+     }
+
+     /* Buttons */
+     .button-group {
+       display: flex;
+       flex-direction: column;
+       gap: 0.75rem;
+       margin-bottom: 1.5rem;
+     }
+
+     .btn {
+       padding: 0.875rem 1.5rem;
+       border: none;
+       border-radius: var(--radius-lg);
+       font-size: 0.9rem;
+       font-weight: 600;
+       cursor: pointer;
+       transition: all 0.3s ease;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 0.75rem;
+       text-decoration: none;
+       position: relative;
+       overflow: hidden;
+     }
+
+     .btn::before {
+       content: '';
+       position: absolute;
+       top: 0;
+       left: -100%;
+       width: 100%;
+       height: 100%;
+       background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+       transition: left 0.5s;
+     }
+
+     .btn:hover::before {
+       left: 100%;
+     }
+
+     .btn-primary {
+       background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+       color: white;
+       box-shadow: var(--shadow-md);
+     }
+
+     .btn-primary:hover {
+       transform: translateY(-2px);
+       box-shadow: var(--shadow-lg);
+     }
+
+     .btn-secondary {
+       background: var(--bg-secondary);
+       color: var(--text-primary);
+       border: 2px solid var(--border-color);
+     }
+
+     .btn-secondary:hover {
+       background: var(--bg-tertiary);
+       border-color: var(--primary-color);
+       transform: translateY(-1px);
+     }
+
+     .btn-icon {
+       width: 18px;
+       height: 18px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+     }
+
+     /* Stats */
+     .stats {
+       display: flex;
+       justify-content: center;
+       gap: 1.5rem;
+       margin-bottom: 1.5rem;
+       padding: 1rem;
+       background: var(--bg-secondary);
+       border-radius: var(--radius-lg);
+       border: 1px solid var(--border-light);
+     }
+
+     .stat {
+       text-align: center;
+     }
+
+     .stat-number {
+       font-size: 1.25rem;
+       font-weight: 700;
+       color: var(--primary-color);
+       display: block;
+     }
+
+     .stat-label {
+       font-size: 0.75rem;
+       color: var(--text-secondary);
+       font-weight: 500;
+     }
+
+     /* Footer */
+     .footer {
+       color: var(--text-muted);
+       font-size: 0.8rem;
+       margin-top: 1.5rem;
+       padding-top: 1rem;
+       border-top: 1px solid var(--border-light);
+     }
+
+     .footer-links {
+       display: flex;
+       justify-content: center;
+       gap: 1rem;
+       margin-bottom: 0.75rem;
+     }
+
+     .footer-link {
+       color: var(--text-secondary);
+       text-decoration: none;
+       transition: color 0.2s ease;
+     }
+
+     .footer-link:hover {
+       color: var(--primary-color);
+     }
+
+    /* Responsive Design */
+    @media (max-width: 640px) {
+      .landing-container {
+        padding: 1rem;
+      }
+
+      .landing-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .brand-title {
+        font-size: 1.875rem;
+      }
+
+      .features {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .stats {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+    }
+
+    /* Loading Animation */
+    .loading-dots {
+      display: inline-flex;
+      gap: 0.25rem;
+    }
+
+    .loading-dots span {
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+      animation: loading 1.4s infinite ease-in-out;
+    }
+
+    .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes loading {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* Hover Effects */
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .feature:hover {
+      color: var(--text-primary);
+      transform: translateX(5px);
+    }
+
+    /* Accessibility */
+    .btn:focus {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Elements -->
+  <div class="bg-elements">
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="landing-container">
+    <div class="landing-card">
+      <!-- Brand Section -->
+      <div class="brand-section">
+        <div class="logo">
+          <i class="fas fa-comments"></i>
+        </div>
+        <h1 class="brand-title">LiveConnect</h1>
+        <p class="brand-subtitle">Connect instantly with people around the world</p>
+      </div>
+
+      <!-- Features -->
+      <div class="features">
+        <div class="feature">
+          <i class="fas fa-bolt"></i>
+          <span>Real-time messaging</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-shield-alt"></i>
+          <span>Secure & private</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-mobile-alt"></i>
+          <span>Mobile friendly</span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-number">1.2K+</span>
+          <span class="stat-label">Active Users</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">50K+</span>
+          <span class="stat-label">Messages Sent</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">99.9%</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-group">
+        <button class="btn btn-primary" onclick="window.location='/auth/google'">
+          <img src="https://developers.google.com/identity/images/g-logo.png" 
+               alt="Google" 
+               class="btn-icon" 
+               style="width: 18px; height: 18px;">
+          Continue with Google
+        </button>
+        
+        <button class="btn btn-secondary" onclick="window.location='/home.html'">
+          <i class="fas fa-user-secret btn-icon"></i>
+          Continue as Guest
+        </button>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-links">
+          <a href="#" class="footer-link">Privacy Policy</a>
+          <a href="#" class="footer-link">Terms of Service</a>
+          <a href="#" class="footer-link">Help Center</a>
+        </div>
+        <p>Join thousands of users connecting worldwide</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Add some interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+      // Animate features on scroll
+      const features = document.querySelectorAll('.feature');
+      features.forEach((feature, index) => {
+        feature.style.opacity = '0';
+        feature.style.transform = 'translateX(-20px)';
+        
+        setTimeout(() => {
+          feature.style.transition = 'all 0.6s ease';
+          feature.style.opacity = '1';
+          feature.style.transform = 'translateX(0)';
+        }, 800 + (index * 100));
+      });
+
+      // Add click effects to buttons
+      const buttons = document.querySelectorAll('.btn');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          // Create ripple effect
+          const ripple = document.createElement('span');
+          const rect = this.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const x = e.clientX - rect.left - size / 2;
+          const y = e.clientY - rect.top - size / 2;
+          
+          ripple.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            left: ${x}px;
+            top: ${y}px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+          `;
+          
+          this.appendChild(ripple);
+          
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+        });
+      });
+    });
+
+    // Add CSS for ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

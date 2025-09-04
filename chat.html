@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Real-Time Chat App</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f2f2f2; }
+    #chat { width: 400px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 0 16px #ddd; padding: 24px; }
+    #messages { list-style: none; margin: 0; padding: 0; height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 4px; margin-bottom: 16px; }
+    #messages li { margin-bottom: 8px; padding: 6px; border-radius: 4px;}
+    .mine { background: #e3f9e5; }
+    .other { background: #f1f1f1; }
+    #form { display: flex; }
+    #input { flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+    #send { padding: 8px 24px; border: none; background: #3076ff; color: #fff; border-radius: 4px; margin-left: 8px; cursor: pointer; }
+    #send:active { background: #2658c8; }
+  </style>
+</head>
+<body>
+  <div id="chat">
+    <ul id="messages"></ul>
+    <form id="form" autocomplete="off">
+      <input id="input" placeholder="Type your message..." autocomplete="off" />
+      <button id="send" type="submit">Send</button>
+    </form>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const messages = document.getElementById('messages');
+    let username = null;
+    fetch('/me').then(res => res.json()).then(data => {
+      username = data.username;
+      // Now use this username for chat messages!
+    });
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit('chat message', { username, content: input.value });
+        input.value = '';
+      }
+    });
+
+    socket.on('message history', function(history) {
+      history.forEach(function(msg) {
+        const item = document.createElement('li');
+        item.textContent = `[${msg.username}]: ${msg.content}`;
+        messages.appendChild(item);
+      });
+      messages.scrollTop = messages.scrollHeight;
+    });
+
+    socket.on('chat message', function(msg) {
+      const item = document.createElement('li');
+      item.className = (msg.username === username) ? 'mine' : 'other';
+      item.textContent = `[${msg.username}]: ${msg.content}`;
+      messages.appendChild(item);
+      messages.scrollTop = messages.scrollHeight;
+    });
+  </script>
+</body>
+</html>
